@@ -5,8 +5,8 @@ using UnityEngine;
 public class Chair : MonoBehaviour
 {
     private Color emptyColor = Color.white;
-    private Color occupiedColor = Color.red;
-    private Color needsCleaningColor = Color.yellow;
+    private Color occupiedColor = new Color(255.0f,49.0f,49.0f,255.0f);
+    private Color needsCleaningColor = new Color(255.0f, 130.0f, 64.0f, 255.0f);
 
     public enum ChairState { 
         Empty,
@@ -27,20 +27,26 @@ public class Chair : MonoBehaviour
             Debug.Log("No sprite renderer found on chair object. Disabling this object.");
             gameObject.SetActive(false);
         }
+        sr.color = emptyColor;
     }
 
-    private ChairState UpdateState(ChairState newState) {
+    public ChairState SetState(ChairState newState) {
         chairState = newState;
         switch (newState) {
             case ChairState.Empty:
                 chairState = newState;
-                //sr.color = Color.
+                sr.color = emptyColor;
+                sr.material.color = emptyColor;
                 break;
             case ChairState.Occupied:
                 chairState = newState;
+                sr.color = occupiedColor;
+                sr.material.color = occupiedColor;
                 break;
             case ChairState.NeedsCleaning:
                 chairState = newState;
+                sr.color = needsCleaningColor;
+                sr.material.color = needsCleaningColor;
                 break;
             case ChairState.NullChair:
                 Debug.Log("You're trying to NULL a chair out of existence. Are you sure you want to do this?");
@@ -48,5 +54,33 @@ public class Chair : MonoBehaviour
         }
 
         return chairState;
+    }
+
+    public ChairState GetState() {
+        return chairState;
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (chairState == ChairState.Empty) {
+            if (collision.gameObject.CompareTag("Customer"))
+            {
+                SetState(ChairState.Occupied);
+                //sr.color = occupiedColor;
+                Debug.Log("Chair now occupied");
+            }
+        }
+        else {
+            Debug.Log("Chair is not empty. Cannot occupy new customer.");
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision){
+        if (chairState == ChairState.Occupied) {
+            if (collision.gameObject.CompareTag("Customer")) {
+                SetState(ChairState.NeedsCleaning);
+                Debug.Log("Chair now Needs Cleaning");
+            }
+        }
     }
 }

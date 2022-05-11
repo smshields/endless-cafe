@@ -9,6 +9,7 @@ TagManager:
   - Chair
   - Table
   - Entrance
+  - Customer
   layers:
   - Default
   - TransparentFX

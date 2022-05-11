@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2058822471182104583}
   - component: {fileID: 2058822471182104577}
   - component: {fileID: 2058822471182104582}
+  - component: {fileID: 6990471998404596600}
   m_Layer: 0
   m_Name: d-chair-2
   m_TagString: Chair
@@ -111,6 +112,19 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &6990471998404596600
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2058822471182104580}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a2604f8fe4341941b74df9f91dedb36, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hasOutlet: 0
 --- !u!1 &2058822472616034707
 GameObject:
   m_ObjectHideFlags: 0
@@ -122,6 +136,7 @@ GameObject:
   - component: {fileID: 2058822472616034706}
   - component: {fileID: 2058822472616034669}
   - component: {fileID: 2058822472616034668}
+  - component: {fileID: 4094180616658228424}
   m_Layer: 0
   m_Name: chair-double
   m_TagString: Chair
@@ -223,3 +238,16 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &4094180616658228424
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2058822472616034707}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a2604f8fe4341941b74df9f91dedb36, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hasOutlet: 0
