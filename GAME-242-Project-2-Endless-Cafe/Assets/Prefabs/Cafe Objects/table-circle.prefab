@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4772931098021798172}
   m_Layer: 0
   m_Name: table-circle
-  m_TagString: Untagged
+  m_TagString: Table
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
