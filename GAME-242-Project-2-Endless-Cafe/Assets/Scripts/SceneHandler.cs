@@ -12,6 +12,7 @@ public class SceneHandler : MonoBehaviour
     [SerializeField] private static float timeScale = 1.0f;
     [SerializeField] private Text currentSeedText;
     [SerializeField] private InputField enteredText;
+    [SerializeField] private Animator optionMenuAnimation;
     private static int enteredSeedValue;
     private static bool valueRequested;
     private void Awake()
@@ -76,5 +77,9 @@ public class SceneHandler : MonoBehaviour
         else {
             valueRequested = false;
         }
+    }
+
+    public void ToggleOptionsMenu() {
+        optionMenuAnimation.SetBool("open", !optionMenuAnimation.GetBool("open"));
     }
 }
