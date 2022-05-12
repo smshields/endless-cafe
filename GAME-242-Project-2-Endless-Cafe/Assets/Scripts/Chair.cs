@@ -38,7 +38,7 @@ public class Chair : MonoBehaviour
         }
         sr.color = emptyColor;
 
-        
+        intervalCleanTime *= SceneHandler.GetTimeScale();
     }
 
     private void Update()
