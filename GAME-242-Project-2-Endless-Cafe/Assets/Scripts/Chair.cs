@@ -36,17 +36,14 @@ public class Chair : MonoBehaviour
             case ChairState.Empty:
                 chairState = newState;
                 sr.color = emptyColor;
-                sr.material.color = emptyColor;
                 break;
             case ChairState.Occupied:
                 chairState = newState;
                 sr.color = occupiedColor;
-                sr.material.color = occupiedColor;
                 break;
             case ChairState.NeedsCleaning:
                 chairState = newState;
                 sr.color = needsCleaningColor;
-                sr.material.color = needsCleaningColor;
                 break;
             case ChairState.NullChair:
                 Debug.Log("You're trying to NULL a chair out of existence. Are you sure you want to do this?");
