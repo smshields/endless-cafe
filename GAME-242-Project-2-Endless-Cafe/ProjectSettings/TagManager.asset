@@ -10,6 +10,8 @@ TagManager:
   - Table
   - Entrance
   - Customer
+  - PickUp
+  - Cashier
   layers:
   - Default
   - TransparentFX

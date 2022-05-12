@@ -19,6 +19,15 @@ public class Chair : MonoBehaviour
     [SerializeField] private bool hasOutlet;
     private SpriteRenderer sr;
 
+    [Tooltip("Minimum clean time in minutes")][SerializeField] private float minCleanTime = 1.0f;
+    [Tooltip("Maximum clean time in minutes")][SerializeField] private float maxCleanTime = 20.0f;
+    [Tooltip("Fixed time in seconds between rolls to check for cleaning")] [SerializeField] private float intervalCleanTime = 1.0f;
+    private float nextCleanCheck = 0.0f;
+
+    [Tooltip("Chance that seat will be cleaned in the next tick")] [SerializeField] private float cleanChance = 0.4f;
+    
+    
+
     private void OnEnable()
     {
         chairState = ChairState.Empty;
@@ -28,6 +37,23 @@ public class Chair : MonoBehaviour
             gameObject.SetActive(false);
         }
         sr.color = emptyColor;
+
+        
+    }
+
+    private void Update()
+    {
+        if (chairState == ChairState.NeedsCleaning && Time.time >= nextCleanCheck) {
+            float cleanCheck = Random.Range(0.0f, 1.0f);
+            if (cleanCheck <= cleanChance) {
+                SetState(ChairState.Empty);
+                ChairManager.unoccupiedChairs.Add(this);
+                //Debug.Log("Unoccupied count: " + ChairManager.unoccupiedChairs.Count);
+            }
+            else {
+                nextCleanCheck = Time.time + intervalCleanTime;
+            }
+        }
     }
 
     public ChairState SetState(ChairState newState) {
@@ -57,14 +83,25 @@ public class Chair : MonoBehaviour
         return chairState;
     }
 
+    public bool IsUnoccupied() {
+        if (chairState == ChairState.Empty)
+            return true;
+        return false;
+    }
+
+    public bool HasOutlet() {
+        return hasOutlet;
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (chairState == ChairState.Empty) {
             if (collision.gameObject.CompareTag("Customer"))
             {
                 SetState(ChairState.Occupied);
-                //sr.color = occupiedColor;
-                Debug.Log("Chair now occupied");
+                //Debug.Log("Chair now occupied");
+                ChairManager.unoccupiedChairs.Remove(this);
+                //Debug.Log("Unoccupied count: " + ChairManager.unoccupiedChairs.Count);
             }
         }
         else {
@@ -76,7 +113,8 @@ public class Chair : MonoBehaviour
         if (chairState == ChairState.Occupied) {
             if (collision.gameObject.CompareTag("Customer")) {
                 SetState(ChairState.NeedsCleaning);
-                Debug.Log("Chair now Needs Cleaning");
+                //Debug.Log("Chair now Needs Cleaning");
+                nextCleanCheck = Time.time + intervalCleanTime;
             }
         }
     }

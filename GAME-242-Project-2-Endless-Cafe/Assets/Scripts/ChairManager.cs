@@ -4,17 +4,18 @@ using UnityEngine;
 
 public class ChairManager : MonoBehaviour
 {
-    private List<GameObject> chairList = new List<GameObject>();
+    [SerializeField] private GameObject chairsParentGO;
+    public static List<Chair> unoccupiedChairs = new List<Chair>();
     
     // Start is called before the first frame update
-    void Start()
-    {
-        
+    void Start(){
+        Chair[] chairList = chairsParentGO.transform.GetComponentsInChildren<Chair>();
+        foreach (Chair c in chairList) {
+            unoccupiedChairs.Add(c);
+        }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+    public static List<Chair> GetUnoccupiedChairs() {
+        return unoccupiedChairs;
     }
 }
