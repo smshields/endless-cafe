@@ -5,8 +5,8 @@ using UnityEngine;
 public class Chair : MonoBehaviour
 {
     private Color emptyColor = Color.white;
-    private Color occupiedColor = new Color(255.0f,49.0f,49.0f,255.0f);
-    private Color needsCleaningColor = new Color(255.0f, 130.0f, 64.0f, 255.0f);
+    private Color occupiedColor = new Color(1.0f, 0.1921569f, 0.1921569f,1.0f);
+    private Color needsCleaningColor = new Color(1.0f, 0.509804f, 0.2509804f, 1.0f);
 
     public enum ChairState { 
         Empty,
