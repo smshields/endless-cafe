@@ -26,7 +26,7 @@ public class SceneHandler : MonoBehaviour
     private void Awake()
     {
         if (useSpecificSeed){
-            Random.InitState(seed);                                 // Will initiate Random using the given seed if requested for reproducing results
+            Random.InitState(seed);  // Will initiate Random using the given seed if requested for reproducing results
         }
         Debug.Log("Initiating scene with seed: " + Random.seed);
         if (currentSeedText != null) {
