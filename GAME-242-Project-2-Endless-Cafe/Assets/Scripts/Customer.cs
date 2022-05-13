@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Customer : MonoBehaviour
 {
-    //TODO: Store Manager 
+    //TODO: Store Manager - load on creation
     public StoreManager store;
 
     //tracks current goal and state of customer
@@ -16,6 +16,11 @@ public class Customer : MonoBehaviour
     public float initialSitGoalChance = 0.3f; //25%
     public float initialRestroomChance = 0.05f; //04%
     public float initialLeaveChance = 0.01f; //01%
+
+    //Variables indicating likelihood of next action after recieving a drink
+    public float leaveAfterDrinkChance = 1f;
+    public float sitAfterDrinkChance = 0.55f;
+    public float restroomAfterDrinkChance = 0.1f;
 
     //probability that an order is online or not
     public float onlineChance = 0.05f; //50%
@@ -50,15 +55,15 @@ public class Customer : MonoBehaviour
         //Determine what the customer is at the restaurant for
         float initialGoal = Random.Range(0f, 1f);
         Debug.Log("initial goal chance was: " + initialGoal);
-        if (initialGoal <= initialLeaveChance)
+        if (initialGoal <= this.initialLeaveChance)
         {
             this.goal = customerGoal.leaveCafe;
         }
-        else if (initialGoal <= initialRestroomChance)
+        else if (initialGoal <= this.initialRestroomChance)
         {
             this.goal = customerGoal.useRestroom;
         }
-        else if (initialGoal <= initialSitGoalChance)
+        else if (initialGoal <= this.initialSitGoalChance)
         {
             this.goal = customerGoal.sitDown;
         }
@@ -80,6 +85,21 @@ public class Customer : MonoBehaviour
         
     }
 
+    public void ReceiveDrink() 
+    {
+        //Customer can now: sit, leave, use restroom
+        float goalAfterDrink = Random.Range(0f, 1f);
+        if (goalAfterDrink <= restroomAfterDrinkChance) {
+            this.goal = customerGoal.useRestroom;
+        }
+        else if (goalAfterDrink <= sitAfterDrinkChance) {
+            this.goal = customerGoal.sitDown;
+        }
+        else {
+            //Destroy here?
+            this.goal = customerGoal.leaveCafe;
+        }
+    }
     //Set State
 
     //State updates
