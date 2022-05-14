@@ -64,6 +64,13 @@ public class Customer : MonoBehaviour
         leaving //customer is leaving
     }
 
+    void OnEnable() 
+    { 
+        GameObject storeGO = GameObject.FindGameObjectsWithTag("CafeObject")[0];
+        this.store = storeGO.GetComponent<StoreManager>();
+
+    }
+
 
     // Start is called before the first frame update
     void Start()
@@ -204,7 +211,7 @@ public class Customer : MonoBehaviour
     public void LeaveCafe() 
     {
         //TODO: Cafe statistics? Total drinks/sat/restroom utilization
-        Object.Destroy(this);
+        Object.Destroy(this.gameObject);
     }
     //Set State
 

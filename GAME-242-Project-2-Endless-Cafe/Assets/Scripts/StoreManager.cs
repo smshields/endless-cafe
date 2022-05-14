@@ -55,6 +55,7 @@ public class StoreManager : MonoBehaviour
             //Set new randomized wait time for next customer.
             this.orderWaitDuration = Random.Range(this.orderWaitMinInterval, this.orderWaitMaxInterval);
             this.nextOrderWait = Time.time + this.orderWaitDuration;
+            Debug.Log("ORDER WAIT: " + this.orderWaitDuration);
         }
 
         //if the bathroom is vacant and someone is in line, dequeue them and put them into the bathroom
@@ -80,6 +81,7 @@ public class StoreManager : MonoBehaviour
     public int SeatingWaitEnqueue(Customer customer)
     {
         //move customer to sitting wait
+        customer.transform.position = this.seatingWaitGO.transform.position;
         //add to queue for seating
         this.seatingWait.Enqueue(customer);
         Debug.Log("Customer started waiting for seating. Total customers waiting for order: " + orderWait.Count);
@@ -93,7 +95,9 @@ public class StoreManager : MonoBehaviour
         //Do not dequeue if no chairs are available
         if(unoccupiedChairs.Count <= 0)
         {
-            Debug.Log("Attempted Dequeue when no chairs are available.");
+            Customer customer = this.seatingWait.Dequeue();
+            Debug.Log("No chairs are available. Customer is leaving the restaurant");
+
             return this.seatingWait.Count;
         }
             
@@ -127,9 +131,10 @@ public class StoreManager : MonoBehaviour
     public int OrderWaitDequeue() 
     {
         //Do not dequeue if no one is waiting.
-        if (orderWait.Count > 0) 
+        if (this.orderWait.Count > 0) 
         {
-            Customer customer = orderWait.Dequeue();
+            Debug.Log("*****************************CUSTOER RECIEVED ORDER!");
+            Customer customer = this.orderWait.Dequeue();
             //update customer with drink, tell them to pursue next goal
             customer.ReceiveDrink();
             Debug.Log("Customer recieved order. Total customers waiting for order: " + orderWait.Count);
@@ -140,7 +145,7 @@ public class StoreManager : MonoBehaviour
 
     public int OrderLineEnqueue(Customer customer)
     {
-        //TODO: move customer to order line wait
+        customer.transform.position = this.orderLineGO.transform.position;
         customer.state = Customer.customerState.waitForOrder;
         orderLine.Enqueue(customer);
         Debug.Log("Customer in line to place an order. Total customers waiting to place an order: " + orderLine.Count);
@@ -167,6 +172,7 @@ public class StoreManager : MonoBehaviour
     public int BathroomLineEnqueue(Customer customer)
     {
         //TODO: move customer to bathroom wait position
+        customer.transform.position = bathroomLineGO.transform.position;   
         customer.state = Customer.customerState.waitForBathroom;
         bathroomLine.Enqueue(customer);
         Debug.Log("Customer in line for the bathroom. Total customers  waiting for bathroom: " + bathroomLine.Count);
@@ -191,6 +197,7 @@ public class StoreManager : MonoBehaviour
     IEnumerator PlaceDrinkOrder(Customer customer) {
         this.cashierAvailable = false;
         this.customerPlacingOrder = customer;
+        customer.transform.position = this.orderLineGO.transform.position;   
         float timeToPlaceOrder = Random.Range(this.orderTimeMinInterval, this.orderTimeMaxInterval);
         customer.state = Customer.customerState.placingOrder;
         yield return new WaitForSeconds(timeToPlaceOrder);
@@ -204,6 +211,7 @@ public class StoreManager : MonoBehaviour
         this.bathroomVacant = false;
         this.customerInBathroom = customer;
         float timeInBathroom = Random.Range(this.bathroomWaitMinInterval, this.bathroomWaitMaxInterval);
+        customer.transform.position = this.bathroomGO.transform.position;    
         yield return new WaitForSeconds(timeInBathroom);
         Debug.Log("Customer left bathroom.");
         this.bathroomVacant = true;
@@ -212,9 +220,7 @@ public class StoreManager : MonoBehaviour
     }
 
     IEnumerator SitDown(Customer customer, Chair chair) {
-        //TODO: move customer to table
         customer.gameObject.transform.position = chair.gameObject.transform.position;
-
         //wait some time
         float timeAtTable = Random.Range(sittingMinInterval, sittingMaxInterval);
         //if table has an outlet, increase time
