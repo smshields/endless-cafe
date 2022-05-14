@@ -584,6 +584,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8794525734195415646}
   - component: {fileID: 5273733277019788609}
+  - component: {fileID: 7283316446258548440}
   m_Layer: 0
   m_Name: Cafe-Objects
   m_TagString: Untagged
@@ -627,6 +628,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   chairsParentGO: {fileID: 8794525733747369490}
+--- !u!114 &7283316446258548440
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8794525734195415647}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8c2f3ac8bcc6ff48bea7da2363b66bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  customerGO: {fileID: 0}
 --- !u!1 &8794525734544345583
 GameObject:
   m_ObjectHideFlags: 0
