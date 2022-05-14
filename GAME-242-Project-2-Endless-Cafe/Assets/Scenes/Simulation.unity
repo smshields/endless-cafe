@@ -261,7 +261,6 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    serializedVersion: 2
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 7283316446258548440, guid: 71e4bab241cc2604eb42c5884957c371, type: 3}
@@ -271,6 +270,14 @@ PrefabInstance:
     - target: {fileID: 7283316446258548440, guid: 71e4bab241cc2604eb42c5884957c371, type: 3}
       propertyPath: spawnLocation.z
       value: -4
+      objectReference: {fileID: 0}
+    - target: {fileID: 8794525732820072572, guid: 71e4bab241cc2604eb42c5884957c371, type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8794525732820072572, guid: 71e4bab241cc2604eb42c5884957c371, type: 3}
+      propertyPath: m_UsedByEffector
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8794525734195415646, guid: 71e4bab241cc2604eb42c5884957c371, type: 3}
       propertyPath: m_RootOrder
@@ -325,7 +332,6 @@ PrefabInstance:
       value: CafeObject
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_AddedGameObjects: []
   m_SourcePrefab: {fileID: 100100000, guid: 71e4bab241cc2604eb42c5884957c371, type: 3}
 --- !u!1 &1207967235
 GameObject:
@@ -399,7 +405,6 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    serializedVersion: 2
     m_TransformParent: {fileID: 1660749861}
     m_Modifications:
     - target: {fileID: 1863848713064548356, guid: 29a4658355becc046a166872e38c8afe, type: 3}
@@ -507,7 +512,6 @@ PrefabInstance:
       value: ReloadScene
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_AddedGameObjects: []
   m_SourcePrefab: {fileID: 100100000, guid: 29a4658355becc046a166872e38c8afe, type: 3}
 --- !u!224 &1436479447 stripped
 RectTransform:
@@ -557,7 +561,6 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    serializedVersion: 2
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 4736892102473108380, guid: 7d2ebfa0926bc3641973232889ff8323, type: 3}
@@ -625,7 +628,6 @@ PrefabInstance:
       value: SceneHandler
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_AddedGameObjects: []
   m_SourcePrefab: {fileID: 100100000, guid: 7d2ebfa0926bc3641973232889ff8323, type: 3}
 --- !u!114 &1485144965 stripped
 MonoBehaviour:
@@ -720,7 +722,6 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
-  m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
