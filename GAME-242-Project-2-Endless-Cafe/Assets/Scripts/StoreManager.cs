@@ -213,7 +213,7 @@ public class StoreManager : MonoBehaviour
 
     IEnumerator SitDown(Customer customer, Chair chair) {
         //TODO: move customer to table
-
+        customer.gameObject.transform.position = chair.gameObject.transform.position;
 
         //wait some time
         float timeAtTable = Random.Range(sittingMinInterval, sittingMaxInterval);
