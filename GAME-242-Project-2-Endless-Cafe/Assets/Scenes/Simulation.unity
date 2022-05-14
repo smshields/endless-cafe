@@ -259,6 +259,10 @@ PrefabInstance:
       propertyPath: customerGO
       value: 
       objectReference: {fileID: 581062006}
+    - target: {fileID: 7283316446258548440, guid: 71e4bab241cc2604eb42c5884957c371, type: 3}
+      propertyPath: spawnLocation.z
+      value: -4
+      objectReference: {fileID: 0}
     - target: {fileID: 8794525734195415646, guid: 71e4bab241cc2604eb42c5884957c371, type: 3}
       propertyPath: m_RootOrder
       value: 2
@@ -808,7 +812,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 711708787498944731, guid: e35f54880356dec48bc02aadeca3f0f9, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -4
       objectReference: {fileID: 0}
     - target: {fileID: 711708787498944731, guid: e35f54880356dec48bc02aadeca3f0f9, type: 3}
       propertyPath: m_LocalRotation.w

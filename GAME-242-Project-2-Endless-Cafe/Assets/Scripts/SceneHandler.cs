@@ -14,10 +14,10 @@ public class SceneHandler : MonoBehaviour
     [SerializeField] private InputField enteredText;
     [SerializeField] private Animator optionMenuAnimation;
     [SerializeField] private Text timeText;
-    [SerializeField] private int openingHour = 6;
-    [SerializeField] private int openingMinute = 30;
-    [SerializeField] private int closingHour = 0;
-    [SerializeField] private int closingMinute = 0;
+    [SerializeField] private static int openingHour = 6;
+    [SerializeField] private static int openingMinute = 30;
+    [SerializeField] private static int closingHour = 0;
+    [SerializeField] private static int closingMinute = 0;
     private static int timeHour = 0;
     private static int timeMinute = 0;
     private float nextUpdateTime;
@@ -120,5 +120,20 @@ public class SceneHandler : MonoBehaviour
 
     public static int GetCurrentMinute() {
         return timeMinute;
+    }
+
+    public static int GetOpeningHour() {
+        return openingHour;
+    }
+    public static int GetOpeningMinute() {
+        return openingMinute;
+    }
+
+    public static int GetClosingHour() {
+        return closingHour;
+    }
+
+    public static int GetClosingMinute() {
+        return closingMinute;
     }
 }
