@@ -123,6 +123,7 @@ public class Customer : MonoBehaviour
         else {
             //Destroy here?
             this.goal = customerGoal.leaveCafe;
+            this.LeaveCafe();
         }
     }
 
@@ -156,6 +157,7 @@ public class Customer : MonoBehaviour
         {
             //Destroy here?
             this.goal = customerGoal.leaveCafe;
+            this.LeaveCafe();
         }
 
     }
@@ -168,7 +170,11 @@ public class Customer : MonoBehaviour
     }
 
     //Destroy customer, update store statistics
-    public void LeaveCafe() { }
+    public void LeaveCafe() 
+    {
+        //TODO: Cafe statistics? Total drinks/sat/restroom utilization
+        Object.Destroy(this);
+    }
     //Set State
 
     //State updates
