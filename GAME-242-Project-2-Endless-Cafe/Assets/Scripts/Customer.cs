@@ -27,6 +27,10 @@ public class Customer : MonoBehaviour
     public float sitAfterBathroomChance = 0.67f; //33.3%
     public float drinkAfterBathroomChance = 0.33f; //33.3%
 
+    //Variables indicating likelihood of next action after sitting down
+    public float leaveAfterSeatChance = 1f; //50%
+    public float restroomAfterSeatChance = 0.5f; //50%
+
     //probability that an order is online or not
     public float onlineChance = 0.05f; //50%
 
@@ -49,12 +53,13 @@ public class Customer : MonoBehaviour
 
     //current status of customer
     public enum customerState { 
-        waitForRestroom, //line outside of restroom
+        waitForBathroom, //line outside of restroom
         waitForOrder, //line to order
         waitForDrink, //line to recieve drink
         waitForTable, //line to sit at table
         entering, //customer is entering
         inRestroom, //customer is in restroom
+        placingOrder,
         sitting, //customer is sitting at table
         leaving //customer is leaving
     }
@@ -69,6 +74,8 @@ public class Customer : MonoBehaviour
         if (initialGoal <= this.initialLeaveChance)
         {
             this.goal = customerGoal.leaveCafe;
+            this.state = customerState.leaving;
+            this.LeaveCafe();
         }
         else if (initialGoal <= this.initialRestroomChance && !this.hasUsedBathroom)
         {
@@ -78,6 +85,7 @@ public class Customer : MonoBehaviour
         else if (initialGoal <= this.initialSitGoalChance)
         {
             this.goal = customerGoal.sitDown;
+            this.store.SeatingWaitEnqueue(this);
         }
         else if(initialGoal <= this.initialDrinkGoalChance && !this.hasDrink)
         {
@@ -119,10 +127,12 @@ public class Customer : MonoBehaviour
         }
         else if (goalAfterDrink <= sitAfterDrinkChance && !this.hasSatAtTable) {
             this.goal = customerGoal.sitDown;
+            this.store.SeatingWaitEnqueue(this);
         }
         else {
             //Destroy here?
             this.goal = customerGoal.leaveCafe;
+            this.state = customerState.leaving;
             this.LeaveCafe();
         }
     }
@@ -152,11 +162,32 @@ public class Customer : MonoBehaviour
         else if (goalAfterBathroom <= sitAfterDrinkChance && !this.hasSatAtTable)
         {
             this.goal = customerGoal.sitDown;
+            this.store.SeatingWaitEnqueue(this);
         }
         else
         {
             //Destroy here?
             this.goal = customerGoal.leaveCafe;
+            this.state = customerState.leaving;
+            this.LeaveCafe();
+        }
+
+    }
+
+    public void LeaveSeat()
+    {
+        //after leaving a seat, a customer can use the restroom or leave
+        this.hasSatAtTable = true;
+        float goalAfterSitting = Random.Range(0f, 1f);
+        if(goalAfterSitting <= restroomAfterSeatChance)
+        {
+            this.goal = customerGoal.useRestroom;
+            this.store.BathroomLineEnqueue(this);
+        }
+        else
+        {
+            this.goal = customerGoal.leaveCafe;
+            this.state = customerState.leaving;
             this.LeaveCafe();
         }
 

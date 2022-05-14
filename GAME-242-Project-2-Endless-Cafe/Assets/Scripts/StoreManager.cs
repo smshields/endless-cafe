@@ -22,13 +22,21 @@ public class StoreManager : MonoBehaviour
 
     //Bathroom Line
     public Queue<Customer> bathroomLine = new Queue<Customer>(); //Queue of customer objects waiting for order 
+    public GameObject bathroomLineGO;
+    public GameObject bathroomGO;
     public bool bathroomVacant = true; //indicates if the bathroom is currently occupied or not.
     public Customer customerInBathroom; //current customer in bathroom
     public float bathroomWaitMinInterval = 3f; //shortest time a customer can USE the bathroom
     public float bathroomWaitMaxInterval = 15f; //longest time a cusomer can USE the bathroom
 
     //Seating
-    public Dictionary<int, Customer> seatingWait;
+    public Queue<Customer> seatingWait = new Queue<Customer>(); // Queue of customer objects waiting for order
+    public GameObject seatingWaitGO;
+    public float sittingMinInterval = 5f; // Shortest time a customer can sit
+    public float sittingMaxInterval = 30f; //Longest time a customer can sit
+    public float outletBonusMin = 5f; // Additional time spent if there is an outlet
+    public float outletBonusMax = 60f; // Additional time spent if there is an outlet
+    public bool seatsAvailable = true;
 
     // Start is called before the first frame update
     void Start()
@@ -58,6 +66,50 @@ public class StoreManager : MonoBehaviour
         if (this.cashierAvailable && this.orderLine.Count > 0) {
             this.OrderLineDequeue();
         }
+
+        //if there are seats available and someone is waiting for one, dequeue them and let them sit down.
+        this.seatsAvailable = ChairManager.GetUnoccupiedChairs().Count > 0;
+        if(this.seatsAvailable && this.seatingWait.Count > 0){
+            this.SeatingWaitDequeue();    
+        }
+
+        
+    }
+
+    //Add customer to sitting waiting
+    public int SeatingWaitEnqueue(Customer customer)
+    {
+        //move customer to sitting wait
+        //add to queue for seating
+        this.seatingWait.Enqueue(customer);
+        Debug.Log("Customer started waiting for seating. Total customers waiting for order: " + orderWait.Count);
+        return this.seatingWait.Count;
+    }
+
+    //Remove a customer from sitting waiting to table
+    public int SeatingWaitDequeue()
+    {
+        List<Chair> unoccupiedChairs = ChairManager.GetUnoccupiedChairs();
+        //Do not dequeue if no chairs are available
+        if(unoccupiedChairs.Count <= 0)
+        {
+            Debug.Log("Attempted Dequeue when no chairs are available.");
+            return this.seatingWait.Count;
+        }
+            
+        //Do not dequeue if no one is waiting
+        if (this.seatingWait.Count > 0) 
+        {
+            Customer customer = this.seatingWait.Dequeue();
+            int seatIndex = Random.Range(0, unoccupiedChairs.Count-1);
+            Chair seat = unoccupiedChairs[seatIndex];
+            //update customer with seating
+
+            StartCoroutine(this.SitDown(customer, seat));
+            Debug.Log("Customer sat at a seat. Total customers waiting for a seat: " + seatingWait.Count);
+
+        }
+        return this.seatingWait.Count;
     }
 
     //Add customer to order waiting
@@ -65,7 +117,8 @@ public class StoreManager : MonoBehaviour
     {
         //move customer to order wait
         customer.transform.position = orderWaitGO.transform.position;
-        customer.state = Customer.customerState.waitForOrder;
+        customer.state = Customer.customerState.waitForDrink;
+        //add to queue for order waiting
         orderWait.Enqueue(customer);
         Debug.Log("Customer started waiting for order. Total customers waiting for order: " + orderWait.Count);
         return orderWait.Count;
@@ -87,6 +140,8 @@ public class StoreManager : MonoBehaviour
 
     public int OrderLineEnqueue(Customer customer)
     {
+        //TODO: move customer to order line wait
+        customer.state = Customer.customerState.waitForOrder;
         orderLine.Enqueue(customer);
         Debug.Log("Customer in line to place an order. Total customers waiting to place an order: " + orderLine.Count);
         return orderLine.Count;
@@ -111,6 +166,8 @@ public class StoreManager : MonoBehaviour
 
     public int BathroomLineEnqueue(Customer customer)
     {
+        //TODO: move customer to bathroom wait position
+        customer.state = Customer.customerState.waitForBathroom;
         bathroomLine.Enqueue(customer);
         Debug.Log("Customer in line for the bathroom. Total customers  waiting for bathroom: " + bathroomLine.Count);
         return bathroomLine.Count;
@@ -135,6 +192,7 @@ public class StoreManager : MonoBehaviour
         this.cashierAvailable = false;
         this.customerPlacingOrder = customer;
         float timeToPlaceOrder = Random.Range(this.orderTimeMinInterval, this.orderTimeMaxInterval);
+        customer.state = Customer.customerState.placingOrder;
         yield return new WaitForSeconds(timeToPlaceOrder);
         Debug.Log("Customer finished placing order.");
         this.cashierAvailable = true;
@@ -151,5 +209,22 @@ public class StoreManager : MonoBehaviour
         this.bathroomVacant = true;
         this.customerInBathroom = null;
         customer.UseBathroom();
+    }
+
+    IEnumerator SitDown(Customer customer, Chair chair) {
+        //TODO: move customer to table
+
+
+        //wait some time
+        float timeAtTable = Random.Range(sittingMinInterval, sittingMaxInterval);
+        //if table has an outlet, increase time
+        if(chair.HasOutlet()){
+            timeAtTable += Random.Range(outletBonusMin, outletBonusMax);
+        }
+        Debug.Log("Customer took a seat.");
+        //make customer leave or use restroom
+        yield return new WaitForSeconds(timeAtTable);
+        Debug.Log("Customer left seat.");
+        customer.LeaveSeat();
     }
 }
