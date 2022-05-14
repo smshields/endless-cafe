@@ -41,7 +41,7 @@ public class StoreManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //If order is ready, and customer is waiting, give to customer
+        //Orders are delivered linearly and blocking with a randomized range of wait times specified above.
         if (Time.time > this.nextOrderWait && this.orderWait.Count > 0) {
             this.OrderWaitDequeue();
             //Set new randomized wait time for next customer.
@@ -52,6 +52,11 @@ public class StoreManager : MonoBehaviour
         //if the bathroom is vacant and someone is in line, dequeue them and put them into the bathroom
         if (this.bathroomVacant && this.bathroomLine.Count > 0) {
             this.BathroomLineDequeue();
+        }
+
+        //if there is a cashier available and someone is in line, dequeue them and put them into the bathroom
+        if (this.cashierAvailable && this.orderLine.Count > 0) {
+            this.OrderLineDequeue();
         }
     }
 
@@ -71,8 +76,9 @@ public class StoreManager : MonoBehaviour
         //Do not dequeue if no one is waiting.
         if (orderWait.Count > 0) 
         {
-            //Call customer "order recieved" method
             Customer customer = orderWait.Dequeue();
+            //update customer with drink, tell them to pursue next goal
+            customer.ReceiveDrink();
             Debug.Log("Customer recieved order. Total customers waiting for order: " + orderWait.Count);
 
         }
@@ -86,6 +92,23 @@ public class StoreManager : MonoBehaviour
         return orderLine.Count;
     }
 
+    public int OrderLineDequeue() 
+    {
+        //Do not dequeue if no one is waiting
+        if (orderLine.Count > 0)
+        {
+            Customer customer = orderLine.Dequeue();
+            StartCoroutine(PlaceDrinkOrder(customer));
+            //update customer with order, tell them to pursue next goal
+            Debug.Log("Customer placed order. Total customers waiting to place order: " + orderLine.Count);
+        }
+        else 
+        {
+            Debug.Log("Attempted to dequeue empty order line.");
+        }
+        return orderLine.Count;
+    }
+
     public int BathroomLineEnqueue(Customer customer)
     {
         bathroomLine.Enqueue(customer);
@@ -94,10 +117,29 @@ public class StoreManager : MonoBehaviour
     }
 
     public int BathroomLineDequeue() {
-        Customer customer = bathroomLine.Dequeue();
-
-        Debug.Log("Customer in bathroom. Total customers waiting for bathroom: " + bathroomLine.Count);
+        //Do not dequeue if no one is waiting
+        if (bathroomLine.Count > 0 && this.bathroomVacant)
+        {
+            Customer customer = bathroomLine.Dequeue();
+            StartCoroutine(UseBathroom(customer));
+            Debug.Log("Customer in bathroom. Total customers waiting for bathroom: " + bathroomLine.Count);
+        }
+        else 
+        {
+            Debug.Log("Attempted to dequeue empty bathroom line.");
+        }
         return bathroomLine.Count;
+    }
+
+    IEnumerator PlaceDrinkOrder(Customer customer) {
+        this.cashierAvailable = false;
+        this.customerPlacingOrder = customer;
+        float timeToPlaceOrder = Random.Range(this.orderTimeMinInterval, this.orderTimeMaxInterval);
+        yield return new WaitForSeconds(timeToPlaceOrder);
+        Debug.Log("Customer finished placing order.");
+        this.cashierAvailable = true;
+        this.customerPlacingOrder = null;
+        customer.PlaceDrinkOrder();
     }
 
     IEnumerator UseBathroom(Customer customer) {
@@ -105,6 +147,7 @@ public class StoreManager : MonoBehaviour
         this.customerInBathroom = customer;
         float timeInBathroom = Random.Range(this.bathroomWaitMinInterval, this.bathroomWaitMaxInterval);
         yield return new WaitForSeconds(timeInBathroom);
+        Debug.Log("Customer left bathroom.");
         this.bathroomVacant = true;
         this.customerInBathroom = null;
         customer.UseBathroom();

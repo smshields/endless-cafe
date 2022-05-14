@@ -23,9 +23,9 @@ public class Customer : MonoBehaviour
     public float restroomAfterDrinkChance = 0.1f; //10%
 
     //Variables indicating likelihood of next action after using the bathroom
-    public float leaveAfterBathroomChance = 1.0f;
-    public float sitAfterBathroomChance = 0.67f;
-    public float drinkAfterBathroomChance = 0.33f;
+    public float leaveAfterBathroomChance = 1.0f; //33.3%
+    public float sitAfterBathroomChance = 0.67f; //33.3%
+    public float drinkAfterBathroomChance = 0.33f; //33.3%
 
     //probability that an order is online or not
     public float onlineChance = 0.05f; //50%
@@ -34,6 +34,7 @@ public class Customer : MonoBehaviour
     public bool onlineOrder = false;
 
     //Tracks if a customer has already done an action within the Cafe
+    public bool hasPlacedOrder = false;
     public bool hasDrink = false;
     public bool hasUsedBathroom = false;
     public bool hasSatAtTable = false;
@@ -86,6 +87,7 @@ public class Customer : MonoBehaviour
             if (this.onlineOrder)
             {
                 //if it's online, join pickup area queue.
+                this.hasPlacedOrder = true;
                 this.store.OrderWaitEnqueue(this);
             }
             else 
@@ -105,6 +107,7 @@ public class Customer : MonoBehaviour
         
     }
 
+    //NOTE: Receive drink does not use a co-routine as we assume drink delivery is linear - each drink being made blocks the next.
     public void ReceiveDrink() 
     {
         this.hasDrink = true;
@@ -114,7 +117,7 @@ public class Customer : MonoBehaviour
             this.goal = customerGoal.useRestroom;
             this.store.BathroomLineEnqueue(this);
         }
-        else if (goalAfterDrink <= sitAfterDrinkChance) {
+        else if (goalAfterDrink <= sitAfterDrinkChance && !this.hasSatAtTable) {
             this.goal = customerGoal.sitDown;
         }
         else {
@@ -131,7 +134,19 @@ public class Customer : MonoBehaviour
         if (goalAfterBathroom <= drinkAfterBathroomChance && !this.hasDrink)
         {
             this.goal = customerGoal.getDrink;
-            //TODO: 
+            //Deterrmine if order is online or not
+            this.onlineOrder = (Random.Range(0f, 1f) <= this.onlineChance);
+            if (this.onlineOrder)
+            {
+                //if it's online, join pickup area queue.
+                this.hasPlacedOrder = true;
+                this.store.OrderWaitEnqueue(this);
+            }
+            else
+            {
+                //If it's in person, join order area queue.
+                this.store.OrderLineEnqueue(this);
+            }
         }
         else if (goalAfterBathroom <= sitAfterDrinkChance && !this.hasSatAtTable)
         {
@@ -143,6 +158,13 @@ public class Customer : MonoBehaviour
             this.goal = customerGoal.leaveCafe;
         }
 
+    }
+
+    public void PlaceDrinkOrder() 
+    {
+        //We assume person moves to waiting area after placing order
+        this.hasPlacedOrder = true;
+        this.store.OrderWaitEnqueue(this);
     }
 
     //Destroy customer, update store statistics
